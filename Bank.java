@@ -4,7 +4,7 @@ import java.util.Scanner;
 class Bank {
 
     static Scanner sc = new Scanner(System.in);
-    static int max_user = 100;
+    static int max_user = 10000;
     static String[][] userDetails = new String[max_user][3];
     static int userCount = 0;
 
