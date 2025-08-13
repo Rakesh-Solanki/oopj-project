@@ -1,10 +1,11 @@
 //Bank Management System(java project)
+
 import java.util.Scanner;
 
 class Bank {
 
     static Scanner sc = new Scanner(System.in);
-    static int max_user = 10000;
+    static int max_user = 100;
     static String[][] userDetails = new String[max_user][3];
     static int userCount = 0;
 
@@ -20,91 +21,114 @@ class Bank {
             sc.nextLine();
 
             //to perform operation according to user choice
+            String temp_user_name;
+            String temp_password;
+
             switch (choice) {
-                case 1 -> registerUser();
-                case 2 -> loginUser();
-                case 3 -> System.out.println("\n---Exiting... Thank you!---\n");
-                default -> System.out.print("\n---Invalid Input---\n");
+                case 1 -> {
+                    System.out.print("Enter User Name : ");
+                    temp_user_name = sc.nextLine();
+
+                    System.out.print("Enter Password : ");
+                    temp_password = sc.nextLine();
+
+                    registerUser("temp_user_name", "temp_password");
+                    break;
+                }
+                case 2 -> {
+                    System.out.print("Enter User Name : ");
+                    temp_user_name = sc.nextLine();
+
+                    System.out.print("Enter Password : ");
+                    temp_password = sc.nextLine();
+
+                    loginUser("temp_user_name", "temp_password");
+                    break;
+                }
+                case 3 ->
+                    System.out.println("\n---Exiting... Thank you!---\n");
+                default ->
+                    System.out.print("\n---Invalid Input---\n");
             }
         } while (choice != 3);
     }
 
     // function for user registration
-    static void registerUser() {
+    static boolean registerUser(String user, String pass) {
         if (userCount >= max_user) {
             System.out.print("\n---There are not space for another users---\n");
-            return;
+            return false;
         }
-
-        System.out.print("\nEnter User Name : ");
-        String temp_user_name = sc.nextLine();
 
         for (int i = 0; i < userCount; i++) {
-            if (userDetails[i][0].equals(temp_user_name)) {
+            if (userDetails[i][0].equals(user)) {
                 System.out.println("\n---Username is already exist !! try another user name.---\n");
-                return;
+                return false;
             }
         }
-        userDetails[userCount][0] = temp_user_name;
-
-        System.out.print("Enter Password : ");
-        userDetails[userCount][1] = sc.nextLine();
-
+        userDetails[userCount][0] = user;
+        userDetails[userCount][1] = pass;
         userDetails[userCount][2] = "0.0";
-
         System.out.println("\n---Registration successful!!---");
 
         userCount++;
+        return true;
     }
 
     // function for user login
-    static void loginUser() {
-        System.out.print("\nEnter User Name : ");
-        String temp_user_name = sc.nextLine();
+    static boolean loginUser(String user, String pass) {
 
-        System.out.print("Enter Password : ");
-        String temp_password = sc.nextLine();
-
-        //validation for usser name & password
+        //validation for user name & password
         for (int i = 0; i < userCount; i++) {
-            if (userDetails[i][0].equals(temp_user_name) && userDetails[i][1].equals(temp_password)) {
+            if (userDetails[i][0].equals(user) && userDetails[i][1].equals(pass)) {
                 System.out.println("\n---Login successful!---\n");
                 System.out.println("\nWelcome " + userDetails[i][0]);
                 // System.out.println("Your Balance = " + userDetails[i][2]);
                 funcforuser(i);
-                return;
+                return true;
             }
         }
         System.out.println("\n => Invalid Password or User Name !! try again");
+        return false;
     }
 
     //function for user functionalities
-    static void funcforuser(int user){
+    static void funcforuser(int user) {
         int choice;
-        do{
+        double amount;
+        do {
             System.out.println("\n---Which operation you want to perform with your Account---");
             System.out.println("\n4 = Deposit Money \n5 = Withdraw Money \n6 = Show Balance \n7 = View Account Details\n8 = Log Out");
             System.out.print("\nEnter Your Choice : ");
             choice = sc.nextInt();
-            switch(choice)
-            {
-                case 4 -> deposit(user);
-                case 5 -> withdraw(user);
-                case 6 -> showbalance(user);   
-                case 7 -> details(user); 
-                case 8 -> System.out.print("\n---Log Out---\n");
-                default -> System.out.print("\n---Invalid Input---\n");    
+            switch (choice) {
+                case 4 -> {
+                    System.out.print("\nEnter amount for deposit : ");
+                    amount = sc.nextDouble();
+                    deposit(user,amount);
+                }
+                case 5 ->{
+                    System.out.print("\nEnter amount for withdraw : ");
+                    amount = sc.nextDouble();
+                    withdraw(user, amount);
+                }
+                case 6 ->
+                    showbalance(user);
+                case 7 ->
+                    details(user);
+                case 8 ->
+                    System.out.print("\n---Log Out---\n");
+                default ->
+                    System.out.print("\n---Invalid Input---\n");
             }
-        }while(choice != 8);
+        } while (choice != 8);
     }
 
     //function for deposit amount
-    static void deposit(int user) {
-        System.out.print("\nEnter deposit amount: ");
-        double amount = sc.nextDouble();
-        if(amount < 0){
+    static boolean deposit(int user,double amount) {
+        if (amount < 0) {
             System.out.print("\n---Amount must be grater than 0---\n");
-            return;
+            return false;
         }
 
         double balance = Double.parseDouble(userDetails[user][2]);
@@ -112,33 +136,32 @@ class Bank {
         userDetails[user][2] = String.valueOf(balance);
 
         System.out.println("\n---Deposit Successful---\n");
+        return true;
     }
 
     //function for withdraw amount
-    static void withdraw(int user){
-        System.out.print("\nEnter withdrawal amount : ");
-        double amount = sc.nextDouble();
-
+    static boolean  withdraw(int user,double amount) {
         double balance = Double.parseDouble(userDetails[user][2]);
-        if(amount > balance){
+        if (amount > balance) {
             System.out.println("\n---Not enough balance---\n");
-        }
-        else{
+            return false;
+        } else {
             balance -= amount;
             userDetails[user][2] = String.valueOf(balance);
             System.out.println("\n---Withdraw Successful---\n");
         }
+        return true;
     }
 
     //function for show balance
-    static void showbalance(int user){
-        System.out.println("\nYour Balance = "+userDetails[user][2]);
+    static void showbalance(int user) {
+        System.out.println("\nYour Balance = " + userDetails[user][2]);
     }
 
     //function for show user details
-    static void details(int user){
-        System.out.print("\nName    :"+userDetails[user][0]);
-        System.out.print("\nPassword:"+userDetails[user][1]);
-        System.out.println("\nBalance :"+userDetails[user][2]);
+    static void details(int user) {
+        System.out.print("\nName    :" + userDetails[user][0]);
+        System.out.print("\nPassword:" + userDetails[user][1]);
+        System.out.println("\nBalance :" + userDetails[user][2]);
     }
 }
