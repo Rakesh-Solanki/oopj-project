@@ -2,7 +2,7 @@
 
 import java.util.Scanner;
 
-class Bank {
+class BMS_week2 {
 
     static Scanner sc = new Scanner(System.in);
     static int max_user = 100;
@@ -32,7 +32,7 @@ class Bank {
                     System.out.print("Enter Password : ");
                     temp_password = sc.nextLine();
 
-                    registerUser("temp_user_name", "temp_password");
+                    registerUser(temp_user_name, temp_password);
                     break;
                 }
                 case 2 -> {
@@ -42,7 +42,7 @@ class Bank {
                     System.out.print("Enter Password : ");
                     temp_password = sc.nextLine();
 
-                    loginUser("temp_user_name", "temp_password");
+                    loginUser(temp_user_name, temp_password);
                     break;
                 }
                 case 3 ->
@@ -56,7 +56,7 @@ class Bank {
     // function for user registration
     static boolean registerUser(String user, String pass) {
         if (userCount >= max_user) {
-            System.out.print("\n---There are not space for another users---\n");
+            System.out.print("\n---No space available for more users---\n");
             return false;
         }
 
@@ -101,6 +101,7 @@ class Bank {
             System.out.println("\n4 = Deposit Money \n5 = Withdraw Money \n6 = Show Balance \n7 = View Account Details\n8 = Log Out");
             System.out.print("\nEnter Your Choice : ");
             choice = sc.nextInt();
+            sc.nextLine(); //to clear buffer
             switch (choice) {
                 case 4 -> {
                     System.out.print("\nEnter amount for deposit : ");
@@ -112,6 +113,7 @@ class Bank {
                     amount = sc.nextDouble();
                     withdraw(user, amount);
                 }
+
                 case 6 ->
                     showbalance(user);
                 case 7 ->
@@ -126,8 +128,8 @@ class Bank {
 
     //function for deposit amount
     static boolean deposit(int user,double amount) {
-        if (amount < 0) {
-            System.out.print("\n---Amount must be grater than 0---\n");
+        if (amount <= 0) {
+            System.out.print("\n---Amount must be greater than 0---\n");
             return false;
         }
 
